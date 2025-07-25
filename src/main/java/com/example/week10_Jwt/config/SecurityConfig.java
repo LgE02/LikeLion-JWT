@@ -1,5 +1,6 @@
 package com.example.week10_Jwt.config;
 
+import com.example.week10_Jwt.jwt.JWTUtil;
 import com.example.week10_Jwt.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JWTUtil jwtUtil;
 
     /**AuthenticationManager는 스프링 시큐리티가 내부적으로 자동 생성해 관리하지만
      커스텀 필터를 추가하는 과정에서 Manager가 필요하여 수동으로 명확히 빈을 등록한다.
@@ -59,7 +62,7 @@ public class SecurityConfig {
         //Before : 해당 필터 전에
         //After : 해당 필터 이후에
         //At : 해당 필터 위치 대체
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //세션을 stateless 상태로 설정. 중요!!
         http.sessionManagement((session) -> session
