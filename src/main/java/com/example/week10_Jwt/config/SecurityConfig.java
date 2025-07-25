@@ -1,5 +1,6 @@
 package com.example.week10_Jwt.config;
 
+import com.example.week10_Jwt.jwt.JWTFilter;
 import com.example.week10_Jwt.jwt.JWTUtil;
 import com.example.week10_Jwt.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,9 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/", "/join").permitAll() //모든 권한 허용
                 .requestMatchers("/admin").hasRole("ADMIN") //admin 권한만 허용
                 .anyRequest().authenticated()); //그 외는 로그인 했을때만 허용
+
+        //JWTFilter 등록
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         //Before : 해당 필터 전에
         //After : 해당 필터 이후에
