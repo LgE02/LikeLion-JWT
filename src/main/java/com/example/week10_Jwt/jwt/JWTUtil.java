@@ -88,7 +88,7 @@ public class JWTUtil {
     //맞으면 성공 토큰 생성 로직
     public String createJwt(String username, String role, Long expiredMs){
         return Jwts.builder()
-                .claim("role", username)
+                .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))//토큰 발행한 현재 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
