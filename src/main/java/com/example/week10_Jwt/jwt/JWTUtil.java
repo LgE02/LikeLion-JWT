@@ -33,8 +33,6 @@ public class JWTUtil {
 //    }
 
     //토큰 검증 로직
-    //Header.Payload와 비밀키로 HMAC을 새로 만들어 기존 Signature와 값이 일치한지 검증
-    //같다면 payload에서 클레임값 꺼냄
     public String getUsername(String token){
         return Jwts.parser()
                 .verifyWith(secretKey) //비밀키 지정
