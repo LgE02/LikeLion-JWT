@@ -3,6 +3,7 @@ package com.example.week10_Jwt.config;
 import com.example.week10_Jwt.jwt.JWTFilter;
 import com.example.week10_Jwt.jwt.JWTUtil;
 import com.example.week10_Jwt.jwt.LoginFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -47,6 +52,25 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+
+        http.cors((cors)->cors
+                .configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+
+                        CorsConfiguration configuration = new CorsConfiguration();
+
+                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); //허용할 프론트 서버 포트
+                        configuration.setAllowedMethods(Collections.singletonList("*"));//허용할 메서드 (Get, Post, Put 등등)
+                        configuration.setAllowCredentials(true); //쿠키, 인즌 토큰, 인증 헤더 등 사용자 자격 증명을 요청에 포함하는 것을 허용
+                        configuration.setAllowedHeaders(Collections.singletonList("*")); //클라이언트가 보낼 수 있는 헤더 제한 해제
+                        configuration.setMaxAge(3600L); //사전 요청(preflight)에 대한 캐시 허용 시간(초), 1시간
+                        configuration.setExposedHeaders(Collections.singletonList("Authorization")); //Authorization 헤더 허가
+
+                        return configuration;
+                    }
+                }));
+
         //jwt는 세션은 stateless 방식으로 관리하기에 csrf 공격을 방어하지 않아도 괜찮다.
         http.csrf((auth) -> auth.disable());
 
